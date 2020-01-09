@@ -7,6 +7,7 @@
 
 using namespace std;
 
+/*структура для ввода данных*/
 template<typename T>
 struct  entry_t {
 	int column;
@@ -17,7 +18,7 @@ struct  entry_t {
 		next = nullptr;
 	}
 
-	template<typename T>
+	template<typename T> // оператор доступа
 	T & operator[](int c) {
 		entry_t* row = this;
 		T s = T();
@@ -32,19 +33,19 @@ struct  entry_t {
 		return s;
 	}
 };
-
+/*класс */
 template<class T>
 class sparsematrix_t
 {
 
 public:
-	sparsematrix_t() = default;
+	sparsematrix_t() = default;//конструктор по умолчанию
 
-	sparsematrix_t(const unsigned _rows, const unsigned _cols) {
+	sparsematrix_t(const unsigned _rows, const unsigned _cols) { // конструктор
 		entities = nullptr;
 	};
 
-	sparsematrix_t(const sparsematrix_t<T>& m) : rows(m.rows), cols(m.cols)
+	sparsematrix_t(const sparsematrix_t<T>& m) : rows(m.rows), cols(m.cols) //конструктор копирования
 	{
 		this->entities = new entry_t<T>[m.rows];
 		for (unsigned i = 0; i < this->rows; i++) {
@@ -65,7 +66,7 @@ public:
 	};
 
 
-	sparsematrix_t & operator+=(sparsematrix_t<T> & m)
+	sparsematrix_t & operator+=(sparsematrix_t<T> & m) // оператор +=
 	{
 		for (unsigned i = 0; i < this->rows; i++)
 			for (unsigned j = 0; j < this->cols; j++)
@@ -74,7 +75,7 @@ public:
 		return *this;
 	};
 
-	sparsematrix_t<T> & operator-=(sparsematrix_t<T> & m)
+	sparsematrix_t<T> & operator-=(sparsematrix_t<T> & m) // оператор -=
 	{
 		for (unsigned i = 0; i < this->rows; i++)
 			for (unsigned j = 0; j < this->cols; j++)
@@ -83,7 +84,7 @@ public:
 		return *this;
 	};
 
-	vector_t<T> & operator * (vector_t<T> v)
+	vector_t<T> & operator * (vector_t<T> v) // оператор умножения матрицы на вектор
 	{
 		vector_t<T> res;
 		res.size = this->rows;
@@ -105,7 +106,7 @@ public:
 		return res;
 	};
 
-	void  WriteMatrixInFile(const string& path)
+	void  WriteMatrixInFile(const string& path) // метод записывающий матрицу в файл в формате .mtx
 	{
 
 		ofstream fileMatrix(path);
@@ -124,7 +125,7 @@ public:
 		}
 		fileMatrix.close();
 	};
-	sparsematrix_t<T> & readMatrixFromFile(string path) {
+	sparsematrix_t<T> & readMatrixFromFile(const string &path) { // метод считывающий матрицу из файла в формате .mtx
 		entry_t<T>* entry = nullptr;
 
 		ifstream fileMatrix(path);
@@ -154,12 +155,12 @@ public:
 		return *this;
 	};
 
-	entry_t<T> & operator[](int r)
+	entry_t<T> & operator[](int r) // оператор доступа
 	{
 		return entities[r];
 	};
 
-	sparsematrix_t operator * (const T a)
+	sparsematrix_t operator * (const T a) // оператор умножения матрицы на константу 
 	{
 		sparsematrix_t<T> s;
 		entry_t* entry = new entry_t;
@@ -186,7 +187,7 @@ public:
 
 	};
 
-	sparsematrix_t & operator=(const sparsematrix_t<T> & m)
+	sparsematrix_t & operator=(const sparsematrix_t<T> & m) // оператор присваивания (копирования)
 	{
 		this->entities = new entry_t<T>[m.romws];
 		for (unsigned i = 0; i < this->rows; i++)
@@ -194,7 +195,8 @@ public:
 		return *this;
 	};
 
-	sparsematrix_t & set(const T val, const unsigned r, const unsigned c) {
+	sparsematrix_t & set(const T val, const unsigned r, const unsigned c) { // метод позволяющий 
+										// задать эл-т по заданным индексам
 		entry_t<T>* head = &this->entities[r];
 
 		if (c < head->column) {
@@ -248,7 +250,7 @@ public:
 		return *this;
 	};
 
-	bool isSimetr() {
+	bool isSimetr() { //метод проверяющий матрицу на симметричность
 		for (size_t i = 0; i < this->rows; i++)
 			for (size_t j = 0; j < this->cols; j++)
 				if (this->operator[](i).operator[](j) == this->operator[](j).operator[](i))
@@ -256,13 +258,13 @@ public:
 				else
 					return false;
 	};
-
+	/*оператор вывода*/
 	template<typename TT>
 	friend ostream & operator<<(ostream & os, const sparsematrix_t<TT> S);
-
+	/*оператор сложения*/
 	template<typename TT>
 	friend sparsematrix_t<TT>  operator+(sparsematrix_t<TT> lhs, sparsematrix_t<TT> rhs);
-
+	/*оператор вычитания*/
 	template<typename TT>
 	friend sparsematrix_t<TT>  operator-(sparsematrix_t<TT> lhs, sparsematrix_t<TT> rhs);
 
