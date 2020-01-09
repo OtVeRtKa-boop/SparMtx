@@ -1,9 +1,11 @@
 #pragma once
 #include<iostream>
 
+/*класс*/
 template<typename T>
 class vector_t {
 public:
+	/*оператор вывода*/
 	friend 	std::ostream & operator<<(std::ostream & os, const vector_t<T>& v);
 		
 	vector_t() : size(0) {
